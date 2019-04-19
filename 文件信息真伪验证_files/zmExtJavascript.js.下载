@@ -1,0 +1,340 @@
+var zm = zm || {};
+
+/**
+ * 去字符串空格
+ * 
+ */
+zm.trim = function(str) {
+	return str.replace(/(^\s*)|(\s*$)/g, '');
+};
+zm.ltrim = function(str) {
+	return str.replace(/(^\s*)/g, '');
+};
+zm.rtrim = function(str) {
+	return str.replace(/(\s*$)/g, '');
+};
+
+/**
+ * 判断开始字符是否是XX
+ * 
+ */
+zm.startWith = function(source, str) {
+	var reg = new RegExp("^" + str);
+	return reg.test(source);
+};
+/**
+ * 判断结束字符是否是XX
+ * 
+ */
+zm.endWith = function(source, str) {
+	var reg = new RegExp(str + "$");
+	return reg.test(source);
+};
+
+/**
+ * iframe自适应高度
+ * 
+ * 
+ * @param iframe
+ */
+zm.autoIframeHeight = function(iframe) {
+	iframe.style.height = iframe.contentWindow.document.body.scrollHeight
+			+ "px";
+};
+
+/**
+ * 设置iframe高度
+ * 
+ * 
+ * @param iframe
+ */
+zm.setIframeHeight = function(iframe, height) {
+	iframe.height = height;
+};
+
+/**
+ * 添加
+ * 
+ * 
+ * @param iframe
+ */
+function doFun(title, url, width, height, grid, buttonName, type) {
+	if (type == 'add') {
+		var dialog = parent.zm.modalDialog({
+			title : title,
+			url : url,
+			width : width,
+			height : height,
+			buttons : [
+					{
+						text : buttonName,
+						handler : function() {
+							dialog.find('iframe').get(0).contentWindow
+									.submitForm(dialog, grid, parent.$);
+						}
+					}, {
+						text : '取消',
+						handler : function() {
+							dialog.dialog('close');
+						}
+					} ]
+		});
+	} else if (type == 'edit') {
+		var selected = grid.datagrid("getSelections");
+		if (selected.length == 1) {
+			//alert(selected[0].studentNo);
+			var dialog = parent.zm.modalDialog({
+				title : title,
+				url : url + '?id=' + selected[0].id,
+				width : width,
+				height : height,
+				buttons : [
+						{
+							text : buttonName,
+							handler : function() {
+								dialog.find('iframe').get(0).contentWindow
+										.submitForm(dialog, grid, parent.$);
+							}
+						}, {
+							text : '取消',
+							handler : function() {
+								dialog.dialog('close');
+							}
+						} ]
+			});
+		} else if (selected.length == 0) {
+			zm.messagerAlert('提示', '请选中要编辑的记录！', 'error');
+		} else {
+			zm.messagerAlert('提示', '请只选中一条要编辑的记录！', 'error');
+		}
+	} else if (type == 'show') {
+		var selected = grid.datagrid("getSelections");
+		if (selected.length == 1) {
+			var dialog = parent.zm.modalDialog({
+				title : title,
+				url : url + '?id=' + selected[0].id,
+				width : width,
+				height : height,
+				buttons : [ {
+					text : '关闭',
+					handler : function() {
+						dialog.dialog('close');
+					}
+				} ]
+			});
+		} else if (selected.length == 0) {
+			zm.messagerAlert('提示', '请选中要查看的记录！', 'error');
+		} else {
+			zm.messagerAlert('提示', '请只选中一条要查看的记录！', 'error');
+		}
+	} else if (type == 'del') {
+		var rows = grid.datagrid("getSelections");
+		if (rows && rows.length != 0) {
+			parent.$.messager.confirm('询问', '您确定要' + buttonName + '此记录？',
+					function(r) {
+						if (r) {
+							var ids = '';
+							for ( var i = 0; i < rows.length; i++) {
+								ids += rows[i].id + ',';
+							}
+							$.post(url, {
+								ids : ids
+							}, function() {
+								grid.datagrid('reload');
+								grid.datagrid('clearChecked');
+								grid.treegrid('reload');
+							}, 'json');
+						}
+					});
+		} else {
+			zm.messagerAlert('提示', '请选中要' + buttonName + '的记录！', 'error');
+		}
+	} else if (type == 'set') {
+		var rows = grid.datagrid("getSelections");
+		if (rows && rows.length != 0) {
+			window.parent.selectTab("打印对象设置", "ext-icon-folder_key", url
+					+ "?id=" + rows[0].id);
+		} else {
+			zm.messagerAlert('提示', '请选中要设置的记录！', 'error');
+		}
+	} else if (type == 'answer') {
+		var rows = grid.datagrid("getSelections");
+		if (rows && rows.length != 0) {
+			window.parent.selectTab("设置答案-" + rows[0].seq,
+					"ext-icon-user_comment", url + "?id=" + rows[0].id);
+		} else {
+			zm.messagerAlert('提示', '请选中要设置的记录！', 'error');
+		}
+	} else if (type == 'reboot') {
+		var rows = grid.datagrid("getSelections");
+		if (rows && rows.length != 0) {
+			parent.$.messager.confirm('询问', '您确定要' + buttonName + '此终端？',
+					function(r) {
+						if (r) {
+							var ids = '';
+							for ( var i = 0; i < rows.length; i++) {
+								ids += rows[i].id + ',';
+							}
+							$.post(url, {
+								ids : ids
+							},
+									function(result) {
+										if (result.success) {
+											grid.datagrid('reload');
+											grid.datagrid('clearChecked');
+											grid.treegrid('reload');
+										} else {
+											zm.messagerAlert('提示', result.msg,
+													'error');
+										}
+
+									}, 'json');
+						}
+					});
+		} else {
+			zm.messagerAlert('提示', '请选中要' + buttonName + '的终端！', 'error');
+		}
+	} else if (type == 'clear') {
+		var selected = grid.datagrid("getSelections");
+		if (selected.length == 1) {
+			parent.$.messager.confirm('询问', '您确定要' + buttonName + '此终端的碳粉？',
+					function(r) {
+						if (r) {
+							$.post(url, {
+								id : selected[0].id
+							}, function() {
+								grid.datagrid('reload');
+								grid.datagrid('clearChecked');
+								grid.treegrid('reload');
+							}, 'json');
+						}
+					});
+		} else {
+			zm.messagerAlert('提示', '请选中要' + buttonName + '的终端！', 'error');
+		}
+	} else if (type == 'showIcon') {
+		var dialog = parent.zm.modalDialog({
+			title : title,
+			url : url,
+			width : width,
+			height : height,
+			buttons : [
+					{
+						text : '确定',
+						handler : function() {
+							dialog.find('iframe').get(0).contentWindow
+									.selectIcon(dialog, $('#iconCls'));
+						}
+					}, {
+						text : '取消',
+						handler : function() {
+							dialog.dialog('close');
+						}
+					} ]
+		});
+	} else if (type == 'publish') {
+		var rows = grid.datagrid("getSelections");
+		if (rows && rows.length != 0) {
+			window.parent.selectTab("发布公告-" + rows[0].name,
+					"ext-icon-page_attach", url + "?id=" + rows[0].id);
+		} else {
+			zm.messagerAlert('提示', '请选中要发布的公告！', 'error');
+		}
+	} else if (type == 'export') {
+		var rows = grid.datagrid("getSelections");
+		if (rows && rows.length != 0) {
+			parent.$.messager.confirm('询问', '勾选记录后，只能导出所选中的记录。您确定要导出选中的记录？',
+					function(r) {
+						if (r) {
+							var ids = '';
+							for ( var i = 0; i < rows.length; i++) {
+								ids += rows[i].id + ',';
+							}
+							$.post(url, {
+								ids : ids
+							}, function() {
+								grid.datagrid('reload');
+								grid.datagrid('clearChecked');
+								grid.treegrid('reload');
+							}, 'json');
+						}
+					});
+		} else {
+			$.post(url, {}, function() {
+				grid.datagrid('reload');
+				grid.datagrid('clearChecked');
+				grid.treegrid('reload');
+			}, 'json');
+			// zm.messagerAlert('提示', '请选中要删除的记录！', 'error');
+		}
+	} else if (type == 'alipay') {
+		var row = grid.datagrid("getSelections");
+		if (row && row.length != 0) {
+			parent.$.messager.confirm('网上支付提示',
+					'支付完成前，不能关闭此窗口。	支付完成后，请根据您支付的情况点击下面按钮，是否支付成功？',
+					function(r) {
+						if (r) {
+							grid.datagrid('reload');
+							grid.datagrid('clearChecked');
+							grid.treegrid('reload');
+						}
+					});
+			// $.post(url, {
+			// id : row[0].id
+			// }, function() {
+			// grid.datagrid('reload');
+			// grid.datagrid('clearChecked');
+			// grid.treegrid('reload');
+			// }, 'json');
+			window.open(url + '?id=' + row[0].id);
+
+		} else {
+//			$.post(url, {}, function() {
+//				grid.datagrid('reload');
+//				grid.datagrid('clearChecked');
+//				grid.treegrid('reload');
+//			}, 'json');
+			zm.messagerAlert('提示', '请选中支付记录！', 'error');
+		}
+	} else if (type == 'jiaofeiAuth') {
+		var selected = grid.datagrid("getSelections");
+		if (selected.length == 1) {
+			if (selected[0].state == 1) {
+				var dialog = parent.zm
+						.modalDialog({
+							title : title,
+							url : url + '?id=' + selected[0].id,
+							width : width,
+							height : height,
+							buttons : [
+									{
+										text : buttonName,
+										handler : function() {
+											dialog.find('iframe').get(0).contentWindow
+													.submitForm(dialog, grid,
+															parent.$);
+										}
+									}, {
+										text : '取消',
+										handler : function() {
+											dialog.dialog('close');
+										}
+									} ]
+						});
+			} else {
+				zm.messagerAlert('提示', '请选择已支付的记录！', 'error');
+			}
+		} else if (selected.length == 0) {
+			zm.messagerAlert('提示', '请选中要编辑的记录！', 'error');
+		} else {
+			zm.messagerAlert('提示', '请只选中一条要编辑的记录！', 'error');
+		}
+	}
+};
+function payState(value, rec) {
+	if (value == "1") {
+		return '<span style="color: blue">已支付</span>';
+	} else {
+		return '<span style="color: red">待支付</span>';
+	}
+};

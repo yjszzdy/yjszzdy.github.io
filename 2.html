@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<!-- saved from url=(0028)http://yjszzdy.hust.edu.cn/? -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>文件信息真伪验证</title>
+
+
+
+
+
+
+<script type="text/javascript">
+var zm = zm || {};
+zm.contextPath = '';
+zm.basePath = 'http://yjszzdy.hust.edu.cn:80';
+zm.version = '20131115';
+zm.pixel_0 = '/webPages/resources/style/images/pixel_0.gif';//0像素的背景，一般用于占位
+</script>
+
+
+<script type="text/javascript" src="./文件信息真伪验_files/WdatePicker.js.下载" charset="utf-8"></script><link href="./文件信息真伪验_files/WdatePicker.css" rel="stylesheet" type="text/css">
+
+
+<script type="text/javascript" charset="utf-8">window.UEDITOR_HOME_URL = '/webPages/resources/jslib/ueditor1_2_6_1-utf8-jsp/';</script>
+<script src="./文件信息真伪验_files/ueditor.config.js.下载" type="text/javascript" charset="utf-8"></script>
+<script src="./文件信息真伪验_files/ueditor.all.min.js.下载" type="text/javascript" charset="utf-8"></script>
+
+
+<script src="./文件信息真伪验_files/jquery-2.0.3.js.下载" type="text/javascript" charset="utf-8"></script>
+
+
+<script src="./文件信息真伪验_files/zmExtJquery.js.下载" type="text/javascript" charset="utf-8"></script>
+
+
+<script src="./文件信息真伪验_files/highcharts.js.下载" type="text/javascript" charset="utf-8"></script>
+<script src="./文件信息真伪验_files/exporting.js.下载" type="text/javascript" charset="utf-8"></script>
+
+<script src="./文件信息真伪验_files/zmExtHighcharts.js.下载" type="text/javascript" charset="utf-8"></script>
+
+
+<script type="text/javascript" src="./文件信息真伪验_files/plupload.full.min.js.下载"></script>
+<script type="text/javascript" src="./文件信息真伪验_files/zh_CN.js.下载"></script>
+
+
+<link id="easyuiTheme" rel="stylesheet" href="./文件信息真伪验_files/easyui.css" type="text/css">
+<!-- <link rel="stylesheet" href="/webPages/resources/jslib/jquery-easyui-1.3.4/themes/icon.css" type="text/css"> -->
+<script type="text/javascript" src="./文件信息真伪验_files/easyui-lang-zh_CN.js.下载" charset="utf-8"></script>
+
+
+<link rel="stylesheet" href="./文件信息真伪验_files/portal.css" type="text/css">
+<script type="text/javascript" src="./文件信息真伪验_files/jquery.portal.js.下载" charset="utf-8"></script>
+<script type="text/javascript" src="./文件信息真伪验_files/jquery.cookie.js.下载" charset="utf-8"></script>
+
+<script src="./文件信息真伪验_files/zmExtEasyUI.js.下载" type="text/javascript" charset="utf-8"></script>
+
+
+<link rel="stylesheet" href="./文件信息真伪验_files/zmExtIcon.css" type="text/css">
+
+
+<link rel="stylesheet" href="./文件信息真伪验_files/zmExtCss.css" type="text/css">
+
+<link rel="shortcut icon" href="http://yjszzdy.hust.edu.cn/logo.ico" type="images/x-icon">
+
+
+<script src="./文件信息真伪验_files/zmExtJavascript.js.下载" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript" charset="utf-8" src="./文件信息真伪验_files/kindeditor.js.下载"></script></head><body onload="QRcode()" style="">&nbsp;
+<script type="text/javascript" charset="utf-8" src="./文件信息真伪验_files/zh_CN.js(1).下载"></script>
+
+<script type="text/javascript">
+ 	var resultDialog;
+		var cjresultDialog;
+	var zmresultDialog;
+	var validDialog;
+	var omitformtags=["input", "textarea", "select"];
+    omitformtags=omitformtags.join(",");
+    omitformtags=","+omitformtags+',';
+    if (typeof document.onselectstart!="undefined"){
+         document.onselectstart=function(){
+              if(omitformtags.indexOf(','+event.srcElement.tagName.toLowerCase()+',') == -1)
+                 return false; 
+         };
+    }else{
+        document.onmousedown=function(e){
+            if(omitformtags.indexOf(','+e.target.tagName.toLowerCase()+',') == -1)
+               return false;
+        };
+        document.onmouseup=function(){
+           return true;
+        };
+    }
+
+
+var omitformtags = [ "input", "textarea", "select" ];
+omitformtags = omitformtags.join(",");
+omitformtags = "," + omitformtags + ',';
+if (typeof document.onselectstart != "undefined") {
+document.onselectstart = function() {
+if (omitformtags.indexOf(',' + event.srcElement.tagName.toLowerCase()
+  + ',') == -1)
+return false;
+};
+} else {
+document.onmousedown = function(e) {
+if (omitformtags.indexOf(',' + e.target.tagName.toLowerCase() + ',') == -1)
+return false;
+};
+document.onmouseup = function() {
+return true;
+};
+}
+	$(function() {
+		var validFun = function() {
+			var validTabs = $('#validTabs').tabs('getSelected');//当前选中的tab
+			var $form = validTabs.find('form');//选中的tab里面的form
+			if ($form.length == 1 && $form.form('validate')) {
+				$('#validBtn').linkbutton('disable');
+				parent.$.messager.progress({
+					text : '数据加载中....'
+				});
+				$
+						.post(
+								zm.contextPath
+										+ '/type/plogAction!doNotNeedSessionAndSecurity_valid.action',
+								$form.serialize(), function(result) {
+									if (result.success!=undefined&&!result.success) {
+										$.messager.alert('提示', result.msg,
+													'error', function() {
+														$('#validBtn').linkbutton(
+																'enable');
+													});
+									} else if(result.ptId=="1"){
+										cjresultDialog.dialog('open');
+										$('#studentName').html(result.studentName);	
+										$('#studentNo').html(result.studentNo);	
+										$('#printType').html(result.printType.name);
+										
+										$('#validCode').html(result.validCode);	
+										$('#printTime').html(result.printTime);		
+										$('#validBtn').linkbutton('enable');
+										
+									} else if(result.ptId=="2"){
+										
+										zmresultDialog.dialog('open');
+										$('#studentName2').html(result.studentName);	
+										$('#studentNo2').html(result.studentNo);	
+										$('#printType2').html(result.printType.name);
+										$('#validCode2').html(result.validCode);	
+										$('#printTime2').html(result.printTime);		
+										$('#validBtn').linkbutton('enable');
+									}
+									parent.$.messager.progress('close');
+								}, 'json');
+			}
+		};
+				
+		validDialog=$('#validDialog').show().dialog({
+			modal : false,
+			closable : false,
+			iconCls : 'logo',
+			buttons : [ {
+				id : 'validBtn',
+				text : '验证',
+				handler : function() {
+					validFun();
+				}
+			} ],
+			onOpen : function() {
+				$('#validForm :input:first').focus();
+				$('#validForm :input').keyup(function(event) {
+					if (event.keyCode == 13) {
+						validFun();
+					}
+				});
+			}
+		});	
+		
+		cjresultDialog = $('#cjresultDialog').show().dialog({
+			modal : false,
+			closed : true,
+			closable : false,
+			iconCls : 'logo',
+			buttons : [ {
+				id : 'revalidBtn',
+				text : '重新验证',
+				handler : function() {
+					cjresultDialog.dialog('close');
+					$('#validfile').attr("src","#");
+					$('#validfile').attr("style","display:none");
+					$('#validForm1 :input:first').focus();
+					$('#validForm1 :input').keyup(function(event) {
+						if (event.keyCode == 13) {
+							validFun();
+						}
+					});
+				}
+			} ]
+		});
+		
+		zmresultDialog = $('#zmresultDialog').show().dialog({
+			modal : false,
+			closed : true,
+			closable : false,
+			iconCls : 'logo',
+			buttons : [ {
+				id : 'revalidBtn',
+				text : '重新验证',
+				handler : function() {
+					zmresultDialog.dialog('close');
+					$('#validfile').attr("src","#");
+					$('#validfile').attr("style","display:none");
+					$('#validForm2 :input:first').focus();
+					$('#validForm2 :input').keyup(function(event) {
+						if (event.keyCode == 13) {
+							validFun();
+						}
+					});
+				}
+			} ]
+		});
+	});
+	
+	function lookFile(){
+		validDialog.dialog('close');
+		zmresultDialog.dialog('close');
+		cjresultDialog.dialog('close');
+		$('#validfile').attr("src","/type/plogAction!doNotNeedSessionAndSecurity_lookfile.action?time=" + Math.random());
+		$('#validfile').attr("style","display:block");
+	}
+
+	function hash(){
+		var id=$('#cjd').val();
+		if(id=="HUSTCBAADMCNACIALLIE"){
+			window.open("HUSTCBAADMCNACIALLIE.html");
+		}
+		else if(id=="HUSTCBAADMCNACIALLIF"){
+			window.open("HUSTCBAADMCNACIALLIF.html");
+		}
+		else {
+			window.open("http://yjszzdy.hust.edu.cn/?code="+id+"&flag=1")
+		}
+	}
+
+	function QRcode(){
+		var flag = '';
+		if(flag==1){
+			$("#cjd").val('');
+
+			var validTabs = $('#validTabs').tabs('getSelected');//当前选中的tab
+			var $form = validTabs.find('form');//选中的tab里面的form
+			if ($form.length == 1 && $form.form('validate')) {
+				$('#validBtn').linkbutton('disable');
+				parent.$.messager.progress({
+					text : '数据加载中....'
+				});
+				$
+						.post(
+								zm.contextPath
+										+ '/type/plogAction!doNotNeedSessionAndSecurity_valid.action',
+								$form.serialize(), function(result) {
+									if (result.success!=undefined&&!result.success) {
+										$.messager.alert('提示', result.msg,
+													'error', function() {
+														$('#validBtn').linkbutton(
+																'enable');
+													});
+									} else if(result.ptId=="1"){
+										cjresultDialog.dialog('open');
+										$('#studentName').html(result.studentName);	
+										$('#studentNo').html(result.studentNo);	
+										$('#printType').html(result.printType.name);
+										
+										$('#validCode').html(result.validCode);	
+										$('#printTime').html(result.printTime);		
+										$('#validBtn').linkbutton('enable');
+										
+									} else if(result.ptId=="2"){
+										
+										zmresultDialog.dialog('open');
+										$('#studentName2').html(result.studentName);	
+										$('#studentNo2').html(result.studentNo);	
+										$('#printType2').html(result.printType.name);
+										$('#validCode2').html(result.validCode);	
+										$('#printTime2').html(result.printTime);		
+										$('#validBtn').linkbutton('enable');
+									}
+									parent.$.messager.progress('close');
+								}, 'json');
+			}
+		}
+	}
+	
+	
+	if (window.Event) 
+		  document.captureEvents(Event.MOUSEUP); 
+		 
+		function nocontextmenu() 
+		{
+		 event.cancelBubble = true
+		 event.returnValue = false;
+		 
+		 return false;
+		}
+		 
+		function norightclick(e) 
+		{
+		 if (window.Event) 
+		 {
+		  if (e.which == 2 || e.which == 3)
+		   return false;
+		 }
+		 else
+		  if (event.button == 2 || event.button == 3)
+		  {
+		   event.cancelBubble = true
+		   event.returnValue = false;
+		   return false;
+		  }
+		 
+		}
+		 
+		document.oncontextmenu = nocontextmenu; 
+		document.onmousedown = norightclick; 
+	
+</script>
+
+
+	<div align="center" valign="bottom" style="margin:10px 0px 0px -20px"><img align="center" src="./文件信息真伪验_files/logo.png"></div>
+	
+	
+	
+		
+	<div style="">
+	<img style="display: none;" id="validfile" border="1px" width="100%" src="http://yjszzdy.hust.edu.cn/?" alt="正在加载...">
+	</div>
+
+<div class="panel window" style="display: block; top: 170px; width: 308px; left: 800px; z-index: 9001;"><div class="panel-header panel-header-noborder window-header" style="width: 308px;"><div class="panel-title panel-with-icon">信息验证</div><div class="panel-icon logo"></div><div class="panel-tool"></div></div><div id="validDialog" title="" class="panel-noscroll panel-body panel-body-noborder window-body" style="overflow: hidden; width: 306px; height: 164px;"><div class="panel" style="top: 170px; width: 306px;"><div style="width: 306px; height: 127px; overflow: hidden; top: 170px;" title="" class="panel-body panel-body-noheader panel-body-noborder dialog-content">
+		<div id="validTabs" class="easyui-tabs tabs-container" data-options="fit:true,border:false" style="width: 306px; height: 127px;">
+			
+			<!-- <div title="证明文件验证" style="overflow: hidden; padding: 10px;">
+				<br>
+				<form method="post" id="validForm2">
+					<table class="table" style="width: 100%;">
+						<tr>
+							<td><input name="data.validCode" class="easyui-validatebox"
+								data-options="required:true" style="width: 260px;" />
+							</td>
+							<input name="data.ptId" type="hidden" value="2"/>
+						</tr>
+					</table>
+				</form>
+			</div>			 -->
+		<div class="tabs-header tabs-header-noborder" style="width: 306px;"><div class="tabs-scroller-left" style="display: none;"></div><div class="tabs-scroller-right" style="display: none;"></div><div class="tabs-wrap" style="margin-left: 0px; margin-right: 0px; width: 306px;"><ul class="tabs" style="height: 26px;"><li class="tabs-selected"><a href="javascript:void(0)" class="tabs-inner" style="height: 25px; line-height: 25px;"><span class="tabs-title">验证码</span><span class="tabs-icon"></span></a></li></ul></div></div><div class="tabs-panels tabs-panels-noborder" style="height: 98px; width: 306px;"><div class="panel" style="display: block; width: 306px;"><div title="" style="overflow: hidden; padding: 10px; width: 286px; height: 78px;" class="panel-body panel-body-noheader panel-body-noborder">
+				<br>
+				<form method="post" id="validForm1">
+					<table class="table" style="width: 100%;">
+						<tbody><tr>
+							<td><input name="data.validCode" id="cjd" class="easyui-validatebox validatebox-text validatebox-invalid" data-options="required:true" style="width: 260px;" title="">
+							</td>
+							<input name="data.ptId" type="hidden" value="1">
+						</tr>
+					</tbody></table>
+				</form>
+			</div></div></div></div>
+	</div></div><div class="dialog-button"><a href="javascript:hash()" class="l-btn" group="" id="validBtn"><span class="l-btn-left"><span class="l-btn-text">验证</span></span></a></div></div></div><div class="window-shadow" style="display: block; left: 800px; top: 170px; z-index: 9000; width: 320px; height: 200px;"></div><div class="panel window" style="display: none; top: 170px; width: 338px; left: 785px;"><div class="panel-header panel-header-noborder window-header" style="width: 338px;"><div class="panel-title panel-with-icon">信息验证</div><div class="panel-icon logo"></div><div class="panel-tool"></div></div><div id="cjresultDialog" title="" class="panel-noscroll panel-body panel-body-noborder window-body" style="overflow: hidden; width: 336px; height: 284px;"><div class="panel" style="display: block; top: 170px; width: 336px;"><div style="width: 336px; height: 247px; overflow: hidden; top: 170px;" title="" class="panel-body panel-body-noheader panel-body-noborder dialog-content">
+		<div id="resultTabs" class="easyui-tabs tabs-container" data-options="fit:true,border:false" style="width: 336px; height: 247px;">
+			
+		<div class="tabs-header tabs-header-noborder" style="width: 336px;"><div class="tabs-scroller-left" style="display: none;"></div><div class="tabs-scroller-right" style="display: none;"></div><div class="tabs-wrap" style="margin-left: 0px; margin-right: 0px; width: 336px;"><ul class="tabs" style="height: 26px;"><li class="tabs-selected"><a href="javascript:void(0)" class="tabs-inner" style="height: 25px; line-height: 25px;"><span class="tabs-title">验证结果</span><span class="tabs-icon"></span></a></li></ul></div></div><div class="tabs-panels tabs-panels-noborder" style="height: 218px; width: 336px;"><div class="panel" style="display: block; width: 336px;"><div title="" style="overflow: hidden; padding: 10px; width: 316px; height: 198px;" class="panel-body panel-body-noheader panel-body-noborder">
+				<table class="table" style="width: 100%; ">
+					<tbody><tr>
+						<th width="80">姓名</th>
+						<td><span id="studentName"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">学号</th>
+						<td><span id="studentNo"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">打印类型</th>
+						<td><span id="printType"></span>
+						</td>
+					</tr>
+													
+					<tr>
+						<th width="80">验证码</th>
+						<td><span id="validCode"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">打印时间</th>
+						<td><span id="printTime"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">查看文件</th>
+						<td><span><a onclick="lookFile()" href="javascript:void(0)">点击查看</a></span>
+						</td>
+					</tr>
+				</tbody></table>
+				<br>
+				<span style="color:red;">此验证码有效！请核对文件内容是否与上述信息一致！</span>
+			</div></div></div></div>
+	</div></div><div class="dialog-button"><a href="javascript:void(0)" class="l-btn" group="" id="revalidBtn"><span class="l-btn-left"><span class="l-btn-text">重新验证</span></span></a></div></div></div><div class="window-shadow" style="display: none; left: 785px; top: 170px;"></div><div class="panel window" style="display: none; top: 170px; width: 338px; left: 785px;"><div class="panel-header panel-header-noborder window-header" style="width: 338px;"><div class="panel-title panel-with-icon">信息验证</div><div class="panel-icon logo"></div><div class="panel-tool"></div></div><div id="zmresultDialog" title="" class="panel-noscroll panel-body panel-body-noborder window-body" style="overflow: hidden; width: 336px; height: 284px;"><div class="panel" style="display: block; top: 170px; width: 336px;"><div style="width: 336px; height: 247px; overflow: hidden; top: 170px;" title="" class="panel-body panel-body-noheader panel-body-noborder dialog-content">
+		<div id="resultTabs" class="easyui-tabs tabs-container" data-options="fit:true,border:false" style="width: 336px; height: 247px;">
+			
+		<div class="tabs-header tabs-header-noborder" style="width: 336px;"><div class="tabs-scroller-left" style="display: none;"></div><div class="tabs-scroller-right" style="display: none;"></div><div class="tabs-wrap" style="margin-left: 0px; margin-right: 0px; width: 336px;"><ul class="tabs" style="height: 26px;"><li class="tabs-selected"><a href="javascript:void(0)" class="tabs-inner" style="height: 25px; line-height: 25px;"><span class="tabs-title">验证结果</span><span class="tabs-icon"></span></a></li></ul></div></div><div class="tabs-panels tabs-panels-noborder" style="height: 218px; width: 336px;"><div class="panel" style="display: block; width: 336px;"><div title="" style="overflow: hidden; padding: 10px; width: 316px; height: 198px;" class="panel-body panel-body-noheader panel-body-noborder">
+				<table class="table" style="width: 100%; ">
+					<tbody><tr>
+						<th width="80">姓名</th>
+						<td><span id="studentName2"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">学号</th>
+						<td><span id="studentNo2"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">打印类型</th>
+						<td><span id="printType2"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">验证码</th>
+						<td><span id="validCode2"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">打印时间</th>
+						<td><span id="printTime2"></span>
+						</td>
+					</tr>
+					<tr>
+						<th width="80">查看文件</th>
+						<td><span><a onclick="lookFile()" href="javascript:void(0)">点击查看</a></span>
+						</td>
+					</tr>
+				</tbody></table>
+				<br>
+				<span style="color:red;">此验证码有效！请核对文件内容是否与上述信息一致！</span>
+			</div></div></div></div>
+	</div></div><div class="dialog-button"><a href="javascript:void(0)" class="l-btn" group="" id="revalidBtn"><span class="l-btn-left"><span class="l-btn-text">重新验证</span></span></a></div></div></div><div class="window-shadow" style="display: none; left: 785px; top: 170px;"></div></body></html>
